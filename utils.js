@@ -1,4 +1,4 @@
-const Prando = require('prando');
+const prando = require('prando');
 const crypto = require("crypto");
 
 const MAX_SEED_VAL = 281474976710655;
@@ -54,14 +54,14 @@ exports.WriteWinners = function (winners) {
 function SetupRandomNumberGenerator (initSeed) {
     if (!initSeed) {
         initSeed = crypto.randomInt(MIN_SEED_VAL, MAX_SEED_VAL);
-        console.warn(`Generated seed for draw: ${initSeed}`)
+        console.warn(`✅ Generated seed for draw: ${initSeed}`)
     }
     else if (typeof initSeed === 'number' && MIN_SEED_VAL >= 0 && initSeed <= MAX_SEED_VAL) {
-        console.warn(`Using user provided seed for draw: ${initSeed}`)
+        console.warn(`✅ Using provided seed for draw: ${initSeed}`)
     }
     else {
         throw "User provided seed is not valid!"
     }
 
-    return new Prando(initSeed);
+    return new prando(initSeed);
 };

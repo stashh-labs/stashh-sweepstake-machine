@@ -1,6 +1,12 @@
+const fs = require('fs');
+const crypto = require('crypto');
+
+const HASH_ALGORITHM = 'sha256';
+
+
 exports.LoadParticipants = function (filenames) {
     let participants = [];
-    
+
     filenames.forEach(file => {
         participants = participants.concat(LoadValidParticipantsFromFile(file))
     });
@@ -13,9 +19,9 @@ exports.LoadParticipants = function (filenames) {
 
 exports.GenerateTicketsFromEntries = function (filenames, participants) {
     let tickets = [];
-    
+
     filenames.forEach(file => {
-        tickets = tickets.concat(LoadValidEntriesFromFile(file,participants))
+        tickets = tickets.concat(LoadValidEntriesFromFile(file, participants))
     });
 
     console.log(`${tickets.length.toLocaleString()} tickets are in the draw.`)
@@ -23,8 +29,18 @@ exports.GenerateTicketsFromEntries = function (filenames, participants) {
     return tickets;
 };
 
+function HashFile(filename) {
+    const hash = crypto.createHash(HASH_ALGORITHM);
+    hash.update(fs.readFileSync(filename));
+
+    const hex = hash.digest('hex');
+
+    console.info(`✅ The ${HASH_ALGORITHM} hash of '${filename}' is ${hex}`)
+}
+
 function LoadValidParticipantsFromFile(filename) {
     const participants = require(filename);
+    HashFile(filename)
 
     console.log(`Loaded ${participants.length.toLocaleString()} participants from '${filename}'`)
 
@@ -33,6 +49,8 @@ function LoadValidParticipantsFromFile(filename) {
 
 function LoadValidEntriesFromFile(filename, participants) {
     const entries = require(filename);
+    HashFile(filename)
+
     let validEntries = 0;
     const tickets = []
 
